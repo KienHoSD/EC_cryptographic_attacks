@@ -1,0 +1,10 @@
+version: '3.7'
+services:
+  chall:
+    build:
+      context: .
+    volumes:
+      - ./:/mov
+    ports:
+      - 6070:6070
+    restart: always
