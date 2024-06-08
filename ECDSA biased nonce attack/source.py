@@ -33,9 +33,9 @@ def ecdsa_sign(msg, privkey):
 pubkey, privkey = genKeyPair()
 encrypted_flag = encrypt_flag(privkey)
 
-sig1 = ecdsa_sign('I have hidden the secret flag as a point of an elliptic curve using my private key.', privkey)
-sig2 = ecdsa_sign('The discrete logarithm problem is very hard to solve, so it will remain a secret forever.', privkey)
-sig3 = ecdsa_sign('Good luck!', privkey)
+sig1 = ecdsa_sign("I have hidden the secret flag as a point of an elliptic curve using my private key.", privkey)
+sig2 = ecdsa_sign("The discrete logarithm problem is very hard to solve, so it will remain a secret forever.", privkey)
+sig3 = ecdsa_sign("Good luck!", privkey)
 
 print('Encrypted flag:', encrypted_flag)
 print('\nPublic key:', (int(pubkey.point.x()), int(pubkey.point.y())), '\n')

@@ -1,0 +1,10 @@
+version: "3.7"
+services:
+  chall:
+    build:
+      context: .
+    volumes:
+      - ./:/biased
+    ports:
+      - 8777:8777
+    restart: always
