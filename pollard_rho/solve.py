@@ -24,8 +24,6 @@ print('P =', P)
 print('Q =', Q)
 
 
-
-
 F = GF(p)
 E = EllipticCurve(F, [a,b])
 P = E(*P)
