@@ -1,0 +1,9 @@
+services:
+  chall:
+    build:
+      context: .
+    volumes:
+      - ./:/pohlig_hellman
+    ports:
+      - 8003:8003
+    restart: always

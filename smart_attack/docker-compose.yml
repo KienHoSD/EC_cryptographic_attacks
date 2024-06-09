@@ -1,0 +1,9 @@
+services:
+  chall:
+    build:
+      context: .
+    volumes:
+      - ./:/smart
+    ports:
+      - 8007:8007
+    restart: always
