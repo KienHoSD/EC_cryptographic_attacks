@@ -1,0 +1,1 @@
+FLAG = "test_flag{Nh4t_g4\}"
