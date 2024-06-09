@@ -5,5 +5,5 @@ services:
     volumes:
       - ./:/invalid
     ports:
-      - 8007:8007
+      - 8004:8004
     restart: always

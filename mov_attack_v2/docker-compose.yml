@@ -5,5 +5,5 @@ services:
     volumes:
       - ./:/mov
     ports:
-      - 8004:8004
+      - 8005:8005
     restart: always

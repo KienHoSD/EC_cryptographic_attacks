@@ -13,5 +13,5 @@ VOLUME ["/invalid"]
 WORKDIR /invalid
 
 
-EXPOSE 8007
-CMD ["socat", "TCP-LISTEN:8007,fork,reuseaddr", "EXEC:'python3 chall.py',stderr"]
+EXPOSE 8004
+CMD ["socat", "TCP-LISTEN:8004,fork,reuseaddr", "EXEC:'python3 chall.py',stderr"]

@@ -28,7 +28,7 @@ def mov_attack(E, P, G):
     return lg, odr
 
 if __name__ == "__main__":
-    io = remote("localhost", 8004)
+    io = remote("localhost", 8005)
     # io = process(["python3", "chall.py"]) # local testing
 
     p = int(io.recvlineS().split('=')[1].strip())
