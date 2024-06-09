@@ -1,6 +1,6 @@
 from sage.all import *
-from Crypto.Util.number import getPrime
-from pwn import *
+from Crypto.Cipher import AES
+from pwn import process, remote
 import multiprocessing
 
 def compute_baby_steps(start, end, P, queue):
@@ -61,11 +61,22 @@ def bsgs_ecdlp(P, Q, E, num_processes=8):
 		p.terminate()
 	
 	return result
-	
+
+def unpad(data, block_size):
+		return data[:-data[-1]]
+
+def decrypt(key, filein, fileout):
+		with open(filein, 'rb') as f:
+				data = f.read()
+		cipher = AES.new(key, AES.MODE_ECB)
+		with open(fileout, 'wb') as f:
+				f.write(unpad(cipher.decrypt(data),16))
+		print(f"Decrypted file {filein} to file {fileout}")
 
 if __name__ == "__main__":
-	# io = remote("localhost", 1337)
-	io = process(["python3", "chall.py"])
+	io = remote("localhost", 8001)
+	# io = process(["python3", "chall.py"]) # local testing
+
 	io.recvuntil(b"p = ")
 	p = int(io.recvline().strip())
 	io.recvuntil(b"a = ")
@@ -90,7 +101,9 @@ if __name__ == "__main__":
 		x = bsgs_ecdlp(G, xG, E, 12)
 		print("Found x:", x)
 		io.sendline(str(x).encode())
-		io.recvline() # Correct, next round!
+		print(io.recvline()) # Correct, next round! or Congratulations! You have solved all 10 rounds!
 	
-	io.interactive() # Congratulations! You have solved all 10 rounds! flag{...}
+	key = io.recvline().strip() # bytes
+	print("Key:", key)
+	decrypt(key, "encrypted.enc", "decrypted.pdf")
 	io.close()

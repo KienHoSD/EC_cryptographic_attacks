@@ -1,10 +1,9 @@
-version: '3.7'
 services:
   chall:
     build:
       context: .
     volumes:
-      - ./:/rho
+      - ./:/bsgs
     ports:
-      - 8002:8002
+      - 8001:8001
     restart: always

@@ -1,11 +1,26 @@
 from sage.all import *
 from Crypto.Util.number import getPrime
+from Crypto.Cipher import AES
 import random
-from secret import FLAG
+from secret import key
+
+assert len(key) == 16
+assert type(key) == bytes
+
+def pad(data, block_size):
+    return data + bytes([block_size - len(data) % block_size] * (block_size - len(data) % block_size))
+
+def encrypt(key, filein):
+    with open(filein, 'rb') as f:
+        data = f.read()
+    cipher = AES.new(key, AES.MODE_ECB)
+    with open('encrypted.enc', 'wb') as f:
+        f.write(cipher.encrypt(pad(data,16)))
+    print(f"Encrypted {filein} with key")	
 
 def gen_curve():
 	while True:
-		p = getPrime(32)
+		p = getPrime(32) # 32-bit prime
 		a = randint(1, p-1)
 		b = randint(1, p-1)
 		try:
@@ -23,9 +38,11 @@ def welcome():
 	print("If G*x = (x, y), you need to enter x.")
 	print("If G*x is not a valid point on E, you will be given another chance.")
 	print("If you enter the wrong x, the program will terminate.")
+	print("We will handout the key if you can solve 10 rounds.")
 	print("Good luck!\n")
 
 if __name__ == "__main__":
+	encrypt(key, "2015-605.pdf")
 	welcome()
 	p, a, b = gen_curve()
 	E = EllipticCurve(GF(p), [a, b])
@@ -40,7 +57,7 @@ if __name__ == "__main__":
 			if(G*x == G*x_input):
 				if(i == 9):
 					print("Congratulations! You have solved all 10 rounds!")
-					print(FLAG)
+					print(key.decode())
 					break
 				print("Correct, next round!")
 			else:

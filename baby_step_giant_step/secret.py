@@ -1,1 +1,1 @@
-FLAG = "test_flag{Nh4t_g4\}"
+key = b"testkey{Nh4tg4'}"
