@@ -15,14 +15,16 @@ def encrypt(key, filein, fileout):
 
 if __name__ == "__main__":
 	# Elliptic curve parameters
-	p = 115792089210356248762697446949407573530086143415290314195533631308867097853951  
-	a = 115792089210356248762697446949407573530086143415290314195533631308867097853948  
-	b = 1235004111951061474045987936620314048836031279781573542995567934901240450608
+
+	# 256 bit prime curve
+	p = 0xffffffff00000001000000000000000000000000ffffffffffffffffffffffff
+	a = 0xffffffff00000001000000000000000000000000fffffffffffffffffffffffc
+	b = 0x02bafcd07b52bebce4b8250599fec251ff3b4b312b7303886a87c56c7167ce30
 	E = EllipticCurve(GF(p), [a, b])
 
 	G = E.gens()[0]
 	# Generate a random secret key (16 bytes)
-	secret = randint(1, 2**(128) - 1)
+	secret = randint(1, 2**128 - 1)
 	P = secret * G
 
 	print(f"{p = }")

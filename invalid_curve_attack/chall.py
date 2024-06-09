@@ -51,10 +51,11 @@ if __name__ == '__main__':
 	a = 486662
 	b = 1
 	p = 2**255 - 19
-	E = {'a': a, 'b': b, 'p': p}  # Curve25519
+	order = 2**252 + 27742317777372353535851937790883648493
+	E = {'a': a, 'b': b, 'p': p} 
 
 	print("Establishing the TLS handshake...\n")
-	secret = randint(1, p-1)
+	secret = randint(1, order - 1)
 	encrypt(secret.to_bytes(32, 'big')[:16], "2017-554.pdf", "encrypted.enc")
 
 	while True:

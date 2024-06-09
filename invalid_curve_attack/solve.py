@@ -2,8 +2,6 @@ from sage.all_cmdline import *
 from Crypto.Cipher import AES
 from pwn import remote, process
 
-
-
 def solveDL(E):
 	while True:
 		try:
@@ -16,12 +14,12 @@ def solveDL(E):
 
 			valid = []
 			for factor in factors:
-				if factor <= 2**40:
+				if factor <= 2**36:
 					valid.append(factor)
 
 			prime = valid[-1]
 
-			G = E.gen(0) * int(order / prime)
+			G = E.gen(0) * int(order // prime)
 
 			# Here we send G to the server
 			tmp_point = G.xy()
@@ -37,34 +35,36 @@ def solveDL(E):
 	message = b"Awaiting public key of the client (enter x y):\n"
 	io.sendlineafter(message, tmp_point)
 
-	# We get back Q which is G * k
+	# We get back P which is G * k
 	data = io.recvline()
-	print(data.decode())
+	print(data.decode().strip())
 
 	if b"Error" in data:
 		print("An error on the server occured")
 		return None, None
 
-	Q = eval(data[len("Shared secret: "):])
+	P = eval(data[len("Shared secret: "):])
+
 	try:
-		Q = E(Q[0], Q[1])
-		print("Computing the discrete log problem")
-		log = G.discrete_log(Q)
-		print(f"DL found: {log}")
-		return (log, prime)
+		P = E(P)
+		dlog = discrete_log(P, G, operation="+", algorithm="bsgs")
+		print(f"DL found: {dlog}")
+		print(f"Prime: {prime}")
 	except Exception as e:
 		print(e)
+		print("Error in getting the discrete log")
 		return None, None
 
+	return dlog, prime
 
 def getDLs(E):
 	dlogs = []
 	primes = []
 	total_primes_bit_size = 0
 	while total_primes_bit_size < p.bit_length():
-		log, prime = solveDL(E)
-		if log != None:
-			dlogs.append(log)
+		dlog, prime = solveDL(E)
+		if dlog and prime:
+			dlogs.append(dlog)
 			primes.append(prime)
 		else:
 			print("Error in getting the discrete log")
@@ -103,4 +103,5 @@ if __name__ == "__main__":
 	# io = process(["python3", "chall.py"]) # local testing
 
 	secret = pwn(E)
+	print(f"secret:", secret)
 	decrypt(secret.to_bytes(32, 'big')[:16], "encrypted.enc", "decrypted.pdf")
