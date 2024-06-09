@@ -4,9 +4,11 @@ from pwn import remote, process
 
 
 
-def solveDL(p,a,b):
+def solveDL(E):
 	while True:
 		try:
+			p = E['p']
+			a = E['a']
 			b = randint(1, p)
 			E = EllipticCurve(GF(p), [a, b])
 			order = E.order()
@@ -55,12 +57,12 @@ def solveDL(p,a,b):
 		return None, None
 
 
-def getDLs(p,a,b):
+def getDLs(E):
 	dlogs = []
 	primes = []
 	total_primes_bit_size = 0
 	while total_primes_bit_size < p.bit_length():
-		log, prime = solveDL(p,a,b)
+		log, prime = solveDL(E)
 		if log != None:
 			dlogs.append(log)
 			primes.append(prime)
@@ -72,18 +74,18 @@ def getDLs(p,a,b):
 	return dlogs, primes
 
 def unpad(data, block_size):
-    return data[:-data[-1]]
+		return data[:-data[-1]]
 
 def decrypt(key, filein, fileout):
-    with open(filein, 'rb') as f:
-        data = f.read()
-    cipher = AES.new(key, AES.MODE_ECB)
-    with open(fileout, 'wb') as f:
-        f.write(unpad(cipher.decrypt(data),16))
-    print(f"Decrypted file {filein} to file {fileout}")
+		with open(filein, 'rb') as f:
+				data = f.read()
+		cipher = AES.new(key, AES.MODE_ECB)
+		with open(fileout, 'wb') as f:
+				f.write(unpad(cipher.decrypt(data),16))
+		print(f"Decrypted file {filein} to file {fileout}")
 
-def pwn(p,a,b):
-	dlogs, primes = getDLs(p,a,b)
+def pwn(E):
+	dlogs, primes = getDLs(E)
 	print(f"dlogs: {dlogs}")
 	print(f"primes: {primes}")
 	super_secret = CRT_list(dlogs, primes)
@@ -95,9 +97,10 @@ if __name__ == "__main__":
 	a = 486662
 	b = 1
 	p = 2**255 - 19
+	E = {'a': a, 'b': b, 'p': p}
 
-	io = remote("localhost", 8007)
+	io = remote("localhost", 8004)
 	# io = process(["python3", "chall.py"]) # local testing
 
-	secret = pwn(p,a,b)
+	secret = pwn(E)
 	decrypt(secret.to_bytes(32, 'big')[:16], "encrypted.enc", "decrypted.pdf")

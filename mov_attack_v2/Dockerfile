@@ -13,5 +13,5 @@ VOLUME ["/mov"]
 WORKDIR /mov
 
 
-EXPOSE 8004
-CMD ["socat", "TCP-LISTEN:8004,fork,reuseaddr", "EXEC:'python3 chall.py',stderr"]
+EXPOSE 8005
+CMD ["socat", "TCP-LISTEN:8005,fork,reuseaddr", "EXEC:'python3 chall.py',stderr"]
