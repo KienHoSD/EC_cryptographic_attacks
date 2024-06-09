@@ -3,14 +3,27 @@ from random import randint
 from Crypto.Cipher import AES
 import json
 
+# params from http://www.monnerat.info/publications/anomalous.pdf
+D = 11
+j = -2**15
+
+def anom_curve():
+    m = 257743850762632419871495
+    p = (11*m*(m + 1)) + 3
+    a = (-3*j * inverse_mod((j - 1728), p)) % p
+    b = (2*j * inverse_mod((j - 1728), p)) % p
+    E = EllipticCurve(GF(p), [a,b])
+    return p, a, b, E
+
 def smarts_attack():
-	with open("smarts_attack_curves.json",'r') as f:
-		curves = json.loads(f.read())
-	index = randint(0,len(curves)-1)
-	p = int(curves[index]['field']['p'],16)
-	a = int(curves[index]['a'],16)
-	b = int(curves[index]['b'],16)
-	E = EllipticCurve(GF(p), [a, b])
+	# with open("smarts_attack_curves.json",'r') as f:
+	# 	curves = json.loads(f.read())
+	# index = randint(0,len(curves)-1)
+	# p = int(curves[index]['field']['p'],16)
+	# a = int(curves[index]['a'],16)
+	# b = int(curves[index]['b'],16)
+	# E = EllipticCurve(GF(p), [a, b])
+	p, a, b, E = anom_curve()
 	print("The curve parameters are:")
 	print("p = "+str(p))
 	print("a = "+str(a))
