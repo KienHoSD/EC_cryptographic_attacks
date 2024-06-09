@@ -1,9 +1,10 @@
+version: '3.7'
 services:
   chall:
     build:
       context: .
     volumes:
-      - ./:/mov
+      - ./:/frey_ruck
     ports:
-      - 8004:8004
+      - 8006:8006
     restart: always

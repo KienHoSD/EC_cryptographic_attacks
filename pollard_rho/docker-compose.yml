@@ -4,7 +4,7 @@ services:
     build:
       context: .
     volumes:
-      - ./:/output
+      - ./:/rho
     ports:
-      - 8088:8088
+      - 8002:8002
     restart: always

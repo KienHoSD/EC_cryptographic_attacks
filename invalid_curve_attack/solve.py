@@ -1,37 +1,43 @@
-from Crypto.Util.number import long_to_bytes
 from sage.all_cmdline import *
-from pwn import *
-
-a = 0xffffffff00000001000000000000000000000000fffffffffffffffffffffffc
-b = 0x5ac635d8aa3a93e7b3ebbd55769886bc651d06b0cc53b0f63bce3c3e27d2604b
-p = 0xffffffff00000001000000000000000000000000ffffffffffffffffffffffff
+from Crypto.Cipher import AES
+from pwn import remote, process
 
 
-def solveDL():
-	b = randint(1, p)
-	E = EllipticCurve(GF(p), [a, b])
-	order = E.order()
-	factors = prime_factors(order)
 
-	valid = []
-	for factor in factors:
-		if factor <= 2**40:
-			valid.append(factor)
+def solveDL(p,a,b):
+	while True:
+		try:
+			b = randint(1, p)
+			E = EllipticCurve(GF(p), [a, b])
+			order = E.order()
+			factors = prime_factors(order)
 
-	prime = valid[-1]
+			valid = []
+			for factor in factors:
+				if factor <= 2**40:
+					valid.append(factor)
 
-	G = E.gen(0) * int(order / prime)
+			prime = valid[-1]
 
-	# Here we send G to the server
-	tmp_point = G.xy()
-	tmp_x, tmp_y = str(tmp_point[0]), str(tmp_point[1])
-	tmp_point = tmp_x + " " + tmp_y
-	message = b"Awaiting public key of the client...\n"
-	r.sendlineafter(message, bytes(tmp_point, "Latin"))
+			G = E.gen(0) * int(order / prime)
+
+			# Here we send G to the server
+			tmp_point = G.xy()
+			tmp_x, tmp_y = str(tmp_point[0]), str(tmp_point[1])
+			tmp_point = tmp_x + " " + tmp_y
+			break
+		except Exception as e:
+			print(e)
+			print("Error in generating the curve")
+			print("Trying again")
+			continue
+
+	message = b"Awaiting public key of the client (enter x y):\n"
+	io.sendlineafter(message, tmp_point)
 
 	# We get back Q which is G * k
-	data = r.recvline()
-	print(data)
+	data = io.recvline()
+	print(data.decode())
 
 	if b"Error" in data:
 		print("An error on the server occured")
@@ -49,26 +55,49 @@ def solveDL():
 		return None, None
 
 
-def getDLs():
+def getDLs(p,a,b):
 	dlogs = []
 	primes = []
-	for i in range(1, 16):
-		log, prime = solveDL()
+	total_primes_bit_size = 0
+	while total_primes_bit_size < p.bit_length():
+		log, prime = solveDL(p,a,b)
 		if log != None:
 			dlogs.append(log)
 			primes.append(prime)
-		print(f"counter: {i}")
+		else:
+			print("Error in getting the discrete log")
+			continue
+		total_primes_bit_size += prime.bit_length()
+		print(f"total primes bit size: {total_primes_bit_size}, need {p.bit_length()}")
 	return dlogs, primes
 
+def unpad(data, block_size):
+    return data[:-data[-1]]
 
-def pwn():
-	dlogs, primes = getDLs()
+def decrypt(key, filein, fileout):
+    with open(filein, 'rb') as f:
+        data = f.read()
+    cipher = AES.new(key, AES.MODE_ECB)
+    with open(fileout, 'wb') as f:
+        f.write(unpad(cipher.decrypt(data),16))
+    print(f"Decrypted file {filein} to file {fileout}")
+
+def pwn(p,a,b):
+	dlogs, primes = getDLs(p,a,b)
 	print(f"dlogs: {dlogs}")
 	print(f"primes: {primes}")
 	super_secret = CRT_list(dlogs, primes)
-	print(long_to_bytes(super_secret))
+	return super_secret
 
 
 if __name__ == "__main__":
-	r = remote("0.0.0.0", 1337)
-	pwn()
+	# Curve25519 parameters (from the server) usually used for key exchange
+	a = 486662
+	b = 1
+	p = 2**255 - 19
+
+	io = remote("localhost", 8007)
+	# io = process(["python3", "chall.py"]) # local testing
+
+	secret = pwn(p,a,b)
+	decrypt(secret.to_bytes(32, 'big')[:16], "encrypted.enc", "decrypted.pdf")

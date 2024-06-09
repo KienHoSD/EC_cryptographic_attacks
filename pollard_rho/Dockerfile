@@ -9,9 +9,9 @@ RUN sage --pip install pycryptodome
 
 COPY chall.py .
 COPY Project.pdf .
-VOLUME ["/output"]
-WORKDIR /output
+VOLUME ["/rho"]
+WORKDIR /rho
 
 
-EXPOSE 8088
-CMD ["socat", "TCP-LISTEN:8088,fork,reuseaddr", "EXEC:'python3 chall.py',stderr"]
+EXPOSE 8002
+CMD ["socat", "TCP-LISTEN:8002,fork,reuseaddr", "EXEC:'python3 chall.py',stderr"]

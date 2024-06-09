@@ -7,11 +7,12 @@ RUN sudo apt-get update && sudo apt-get install socat -y && sudo apt-get install
 RUN sage --pip install pycryptodome
 
 COPY chall.py .
-COPY 2018-307.pdf .
+COPY secret.py . 
+COPY 3-540-48910-X_14.pdf .
 
-VOLUME ["/mov"]
-WORKDIR /mov
+VOLUME ["/frey_ruck"]
+WORKDIR /frey_ruck
 
 
-EXPOSE 8004
-CMD ["socat", "TCP-LISTEN:8004,fork,reuseaddr", "EXEC:'python3 chall.py',stderr"]
+EXPOSE 8006
+CMD ["socat", "TCP-LISTEN:8006,fork,reuseaddr", "EXEC:'python3 chall.py',stderr"]

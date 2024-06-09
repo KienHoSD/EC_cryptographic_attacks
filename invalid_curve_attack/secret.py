@@ -1,1 +1,0 @@
-FLAG = b"test_flag{Should_check_the_input_points}"

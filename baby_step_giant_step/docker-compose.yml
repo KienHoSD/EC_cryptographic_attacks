@@ -3,7 +3,7 @@ services:
     build:
       context: .
     volumes:
-      - ./:/mov
+      - ./:/bsgs
     ports:
-      - 8004:8004
+      - 8001:8001
     restart: always
