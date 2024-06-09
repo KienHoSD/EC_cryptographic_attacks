@@ -1,0 +1,9 @@
+services:
+  chall:
+    build:
+      context: .
+    volumes:
+      - ./:/invalid
+    ports:
+      - 8007:8007
+    restart: always
