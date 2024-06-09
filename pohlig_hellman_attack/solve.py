@@ -14,15 +14,15 @@ def decrypt(key, filein, fileout):
 	print(f"Decrypted file {filein} to file {fileout}")
 
 def pohlig_hellman(P, Q, bound=None):
-	n = P.order()
-	fac = factor(n)
-	print(f"factors: {fac}")
+	order = P.order()
+	factors = factor(order)
+	print(f"factors: {factors}")
 	dlogs = []
 	primes = []
 	total_bit_prime = 0
-	for prime, exponent in fac:
-		P_0 = (n // (prime ** exponent)) * P 
-		Q_0 = (n // (prime ** exponent)) * Q
+	for prime, exponent in factors:
+		P_0 = (order // (prime ** exponent)) * P 
+		Q_0 = (order // (prime ** exponent)) * Q
 		log = discrete_log(Q_0, P_0, operation='+', algorithm='rho')
 		dlogs.append(log)
 		print(f"DL found = {log}  mod({prime**exponent})")
@@ -42,6 +42,7 @@ def pohlig_hellman(P, Q, bound=None):
 if __name__ == "__main__":
 	io = remote("localhost", 8003)
 	# io = process(["python3", "chall.py"]) # local testing
+
 	# Elliptic curve parameters
 	p = int(io.recvline().strip().split(b" = ")[1])
 	a = int(io.recvline().strip().split(b" = ")[1])
@@ -52,6 +53,7 @@ if __name__ == "__main__":
 	G = E(G)
 	P = E(P)
 
+	# find the secret key with known bound of 128 bits
 	secret = pohlig_hellman(G, P, bound=128)
 
 	decrypt(secret.to_bytes(16, 'big'), "encrypted.enc","decrypted.pdf")

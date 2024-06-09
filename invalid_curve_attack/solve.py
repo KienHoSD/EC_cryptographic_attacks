@@ -2,8 +2,6 @@ from sage.all_cmdline import *
 from Crypto.Cipher import AES
 from pwn import remote, process
 
-
-
 def solveDL(E):
 	while True:
 		try:
