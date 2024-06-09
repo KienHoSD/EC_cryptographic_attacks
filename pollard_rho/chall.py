@@ -6,13 +6,6 @@ from hashlib import sha1
 import random
 
 
-def encrypt(key, mess):
-    key = sha1(str(key).encode()).digest()[:16]
-    iv = random.randbytes(16)
-    cipher = AES.new(key, AES.MODE_CBC, iv)
-    ct = cipher.encrypt(pad(mess, AES.block_size))
-    return iv + ct
-
 def pad(data, block_size):
     return data + bytes([block_size - len(data) % block_size] * (block_size - len(data) % block_size))
 
@@ -22,7 +15,7 @@ def encrypt(key, filein, fileout):
     cipher = AES.new(key, AES.MODE_ECB)
     with open(fileout, 'wb') as f:
         f.write(cipher.encrypt(pad(data,16)))
-    print(f"Encrypted {filein} with key")	
+    print(f"Encrypted file {filein} to file {fileout}")	
 
 def genPara():
     while True:
