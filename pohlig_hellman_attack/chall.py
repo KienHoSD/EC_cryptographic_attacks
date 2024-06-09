@@ -13,11 +13,12 @@ def genCurve(bitsize, smooth):
         order *= getPrime(bitsize - order.bit_length())
         order += 1
 
-      p = next_prime(order+getPrime(32))
+      p = next_prime(order+100)
       F = GF(p)
 
       # Step 2: Desired prime order n
-      n = order
+      n = next_prime(p - 2*isqrt(p) + 2)      # Step 2: Desired prime order n
+
 
       # Step 3: Compute the trace of Frobenius t
       t = p + 1 - n
@@ -27,6 +28,7 @@ def genCurve(bitsize, smooth):
 
       # Step 5: Discriminant D
       D = t^2 - 4*p
+      print(D)
       print(D % 4)
       # Step 6: Compute the Hilbert class polynomial H_D(x)
       H = hilbert_class_polynomial(D)

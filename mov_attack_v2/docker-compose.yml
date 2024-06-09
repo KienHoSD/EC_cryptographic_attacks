@@ -1,9 +1,0 @@
-services:
-  chall:
-    build:
-      context: .
-    volumes:
-      - ./:/mov
-    ports:
-      - 8005:8005
-    restart: always
