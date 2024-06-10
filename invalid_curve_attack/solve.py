@@ -92,6 +92,7 @@ def pwn(E):
 	return int(super_secret) # convert Integer to int
 
 
+
 if __name__ == "__main__":
 	# Curve25519 parameters (from the server) usually used for key exchange
 	a = 486662
