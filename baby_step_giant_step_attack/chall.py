@@ -50,7 +50,7 @@ if __name__ == "__main__":
 	try:
 		G = E.random_point()
 		print(f"G = {G.xy()}")
-		for i in range(20): # 10 rounds
+		for i in range(10): # 10 rounds
 			x = random.randint(1, E.order())
 			print("G*x =", (G*x).xy())
 			x_input = int(input("Enter x: "))
