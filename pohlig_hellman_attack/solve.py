@@ -36,7 +36,7 @@ def pohlig_hellman(P, Q, bound=None):
 				break
 
 	print("Calculating in CRT...")
-	secret = crt(dlogs, primes)
+	secret = int(crt(dlogs, primes))
 	return secret
 
 if __name__ == "__main__":
