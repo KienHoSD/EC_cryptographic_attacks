@@ -21,7 +21,7 @@ def get_embedding_degree(q, n, max_k):
 
     return None
 
-def attack(P, R, max_k=6, max_tries=10):
+def frey_ruck(P, R, max_k=6, max_tries=10):
     """
     Solves the discrete logarithm problem using the Frey-Ruck attack.
     More information: Harasawa R. et al., "Comparing the MOV and FR Reductions in Elliptic Curve Cryptography" (Section 3)
@@ -92,7 +92,7 @@ if __name__ == "__main__":
         P = E(P)
         print("Curve order:", E.order())
 
-        d = attack(G, P)
+        d = frey_ruck(G, P)
         assert G*d == P, "wrong d!" # check if d is correct, have chance to fail
         print("d:", d)
 
