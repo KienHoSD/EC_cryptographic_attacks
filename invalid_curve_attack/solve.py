@@ -89,7 +89,8 @@ def pwn(E):
 	print(f"dlogs: {dlogs}")
 	print(f"primes: {primes}")
 	super_secret = CRT_list(dlogs, primes)
-	return int(super_secret) # Convert Integer to int
+	return int(super_secret) # convert Integer to int
+
 
 
 if __name__ == "__main__":
