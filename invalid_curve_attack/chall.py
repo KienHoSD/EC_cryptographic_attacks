@@ -56,7 +56,7 @@ if __name__ == '__main__':
 
 	print("Establishing the TLS handshake...\n")
 	secret = randint(1, order - 1)
-	encrypt(secret.to_bytes(32, 'big')[:16], "2017-554.pdf", "encrypted.enc")
+	encrypt(secret.to_bytes(32, 'big'), "2017-554.pdf", "encrypted.enc")
 
 	while True:
 		C = input("Awaiting public key of the client (enter x y):\n")

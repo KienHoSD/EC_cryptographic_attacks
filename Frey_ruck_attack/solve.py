@@ -1,5 +1,5 @@
 from sage.all import *
-from pwn import logging, remote
+from pwn import logging, remote, process
 from Crypto.Util.Padding import unpad
 from Crypto.Cipher import AES
 
@@ -70,9 +70,10 @@ def decrypt(key, filein, fileout):
 		print(f"Decrypted file {filein} to file {fileout}")
 
 if __name__ == "__main__":
-    io = remote("localhost", 8006)
-    # r = process(["python3", "chall.py"]) # local testing
+    # io = remote("localhost", 8006)
+    io = process(["python3", "chall.py"]) # local testing
     try:
+        print("Receiving parameters...")
         p = int(io.recvlineS().split('=')[1].strip())
         a = int(io.recvlineS().split('=')[1].strip())
         b = int(io.recvlineS().split('=')[1].strip())
@@ -86,18 +87,17 @@ if __name__ == "__main__":
         print(f"G =", G)
         print(f"P =", P)
 
-
         E = EllipticCurve(GF(p), [a, b])
         G = E(G)
         P = E(P)
-        print("Curve order:", E.order())
+        print("G order:", G.order())
 
         d = frey_ruck(G, P)
         assert G*d == P, "wrong d!" # check if d is correct, have chance to fail
         print("d:", d)
 
-        decrypt(int.to_bytes(d, 16), "encrypted.enc", "decrypted.pdf")
-        io.close()
+        decrypt(int.to_bytes(d, 32), "encrypted.enc", "decrypted.pdf")
+
     except Exception as e:
         print(e)
         io.close()
