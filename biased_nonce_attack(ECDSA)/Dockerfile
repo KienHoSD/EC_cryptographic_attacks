@@ -7,7 +7,7 @@ RUN sudo apt-get update && sudo apt-get install socat -y && sudo apt-get install
 RUN sage --pip install pycryptodome ecdsa
 
 
-COPY source.py .
+COPY chall.py .
 COPY 2019-023.pdf .
 VOLUME ["/biased"]
 WORKDIR /biased

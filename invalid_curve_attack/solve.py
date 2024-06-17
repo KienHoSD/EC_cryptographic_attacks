@@ -92,7 +92,6 @@ def pwn(E):
 	return int(super_secret) # convert Integer to int
 
 
-
 if __name__ == "__main__":
 	# Curve25519 parameters (from the server) usually used for key exchange
 	a = 486662
@@ -105,4 +104,4 @@ if __name__ == "__main__":
 
 	secret = pwn(E)
 	print(f"secret:", secret)
-	decrypt(secret.to_bytes(32, 'big')[:16], "encrypted.enc", "decrypted.pdf")
+	decrypt(secret.to_bytes(32, 'big'), "encrypted.enc", "decrypted.pdf")

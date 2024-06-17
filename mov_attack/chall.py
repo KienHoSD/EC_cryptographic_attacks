@@ -23,7 +23,7 @@ def getPp1(x, k):
             return p
 
 if __name__ == "__main__":
-    secret = os.urandom(16) # also the key to encrypt pdf file
+    secret = os.urandom(32) # also the key to encrypt pdf file
     p, q = getPp1(512, 16), getPp1(512, 16)
 
     assert isPrime(p) and isPrime(q)
@@ -33,13 +33,13 @@ if __name__ == "__main__":
     )
     E = EllipticCurve(Zmod(n), [a, b])
     G = E(p, p) + E(q, q)
-    C = bytes_to_long(secret) * G
+    Q = bytes_to_long(secret) * G
 
     print(f"{p = }")
     print(f"{q = }")
     print(f"{a = }")
     print(f"{b = }")
-    print(f"C =", C.xy())
+    print(f"C =", Q.xy())
     print(f'{n = }')
     encrypt(secret, "2018-307.pdf", "encrypted.enc")
 

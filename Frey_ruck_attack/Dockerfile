@@ -7,7 +7,6 @@ RUN sudo apt-get update && sudo apt-get install socat -y && sudo apt-get install
 RUN sage --pip install pycryptodome
 
 COPY chall.py .
-COPY secret.py . 
 COPY 3-540-48910-X_14.pdf .
 
 VOLUME ["/frey_ruck"]
