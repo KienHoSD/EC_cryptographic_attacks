@@ -96,7 +96,7 @@ if __name__ == "__main__":
         assert G*d == P, "wrong d!" # check if d is correct, have chance to fail
         print("d:", d)
 
-        decrypt(int.to_bytes(d, 32), "encrypted.enc", "decrypted.pdf")
+        decrypt(int.to_bytes(d, 16,"big"), "encrypted.enc", "decrypted.pdf")
 
     except Exception as e:
         print(e)

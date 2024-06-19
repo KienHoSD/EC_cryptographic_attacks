@@ -54,5 +54,5 @@ if __name__ == "__main__":
     mq, oq = mov_attack(Eq, Eq(C), Eq(G))
     secret = int(crt([mp, mq], [op, oq])) # convert Integer to int
 
-    decrypt(int.to_bytes(secret, 32), "encrypted.enc", "decrypted.pdf")
+    decrypt(int.to_bytes(secret, 32, "big"), "encrypted.enc", "decrypted.pdf")
     

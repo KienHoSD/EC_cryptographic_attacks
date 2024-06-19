@@ -21,12 +21,12 @@ def encrypt(key, filein):
 
 def gen_curve():
     while True:
-        p = getPrime(256)
+        p = getPrime(128)
         a = p-1
         b = 0
         E = EllipticCurve(GF(p), [a, b])
         # print(prime_factors(E.order()))
-        if prime_factors(E.order())[-1] <= 2**90 and 4*a**3 + 27*b**2 != 0: 
+        if prime_factors(E.order())[-1] <= 2**50 and 4*a**3 + 27*b**2 != 0: 
             for _ in range(10):
                 G = E.random_point()
                 k = get_embedding_degree(E.base_ring().order(), G.order(), 6)
@@ -46,4 +46,4 @@ if __name__ == "__main__":
     print(f"{b = }")
     print(f"G =", G.xy())
     print(f"P =", P.xy())
-    encrypt(int.to_bytes(key, 32),"3-540-48910-X_14.pdf")
+    encrypt(int.to_bytes(key, 16,"big"),"3-540-48910-X_14.pdf")
